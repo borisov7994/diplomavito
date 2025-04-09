@@ -11,6 +11,12 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        @if(app()->environment('local'))
+    <style>
+        .debug-red { border: 2px solid red !important; }
+        .debug-blue { border: 2px solid blue !important; }
+    </style>
+@endif
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -29,7 +35,7 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+            @yield('content')
             </main>
         </div>
     </body>
