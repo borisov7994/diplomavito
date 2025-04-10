@@ -15,11 +15,7 @@
                                     {{ number_format($product->price, 2) }} ₽
                                 </span>
                                 <div class="flex space-x-2">
-                                    <a href="#" class="p-2 text-blue-500 hover:bg-blue-50 rounded">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                                        </svg>
-                                    </a>
+                                    
                                     <form action="{{ route('products.destroy', $product) }}" method="POST">
                                         @csrf
                                         @method('DELETE')

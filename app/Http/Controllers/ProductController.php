@@ -35,4 +35,8 @@ class ProductController extends Controller
         
         return redirect()->route('dashboard')->with('success', 'Товар успешно добавлен!');
     }
+    public function destroy(Product $product) {
+        $product->delete();
+        return redirect()->back();
+    }
 }
