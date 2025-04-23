@@ -39,4 +39,9 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->back();
     }
+
+    public function show(Product $product) 
+    {
+    return view('products.show', compact('product'));
+    }
 }

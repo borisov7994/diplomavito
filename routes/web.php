@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,11 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
    
+    Route::get('/messages', [MessageController::class, 'list'])->name('messages.list');
+    Route::get('/messages/{product}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{product}', [MessageController::class, 'store'])->name('messages.store');
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -32,7 +38,12 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/products/{product}/messages', [MessageController::class, 'show'])->name('messages.show');
+Route::post('/products/{product}/messages', [MessageController::class, 'store'])->name('messages.store');
+Route::get('/products/{product}/chat', [MessageController::class, 'index'])->name('messages.index');
