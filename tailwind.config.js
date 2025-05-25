@@ -11,6 +11,13 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                'faceit': {
+                  'orange': '#FF5500',
+                  'dark': '#1E1E1E',
+                  'light': '#F5F5F5'
+                }
+              },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },

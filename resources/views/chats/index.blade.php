@@ -4,27 +4,32 @@
 <div class="max-w-7xl mx-auto py-8 px-4">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Список чатов -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-            <h3 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Мои чаты</h3>
-            <div class="space-y-2">
+        <div class="bg-faceit-light dark:bg-faceit-dark rounded-lg shadow-lg p-4 border border-faceit-orange/20">
+            <h3 class="text-xl font-bold mb-4 text-faceit-dark dark:text-faceit-light">Мои чаты</h3>
+            <div class="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
                 @foreach($chats as $chat)
                 <a href="{{ route('chats.show', $chat) }}" 
-                   class="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                   class="block p-3 rounded-lg hover:bg-faceit-orange/10 dark:hover:bg-faceit-orange/20 transition duration-300 border-b border-faceit-orange/10 last:border-0">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-gray-700 flex items-center justify-center mr-3">
-                            <span class="text-sm font-medium text-primary-600 dark:text-primary-300">
+                        <div class="w-10 h-10 rounded-full bg-faceit-orange/10 flex items-center justify-center mr-3">
+                            <span class="text-sm font-medium text-faceit-orange">
                                 {{ $chat->seller && $chat->seller->name ? strtoupper(substr($chat->seller->name, 0, 1)) : '?' }}
                             </span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium text-gray-900 dark:text-gray-100">{{ $chat->seller->name ?? 'Unknown' }}</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ $chat->product->name ?? 'No product' }}</p>
+                            <p class="font-medium text-faceit-dark dark:text-faceit-light">{{ $chat->seller->name ?? 'Unknown' }}</p>
+                            <p class="text-sm text-faceit-dark/70 dark:text-faceit-light/70 truncate">{{ $chat->product->name ?? 'No product' }}</p>
                             @if($chat->messages->count() > 0)
-                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            <p class="text-xs text-faceit-dark/50 dark:text-faceit-light/50 truncate">
                                 {{ Str::limit($chat->messages->last()->content, 30) }}
                             </p>
                             @endif
                         </div>
+                        @if($chat->unread_count > 0)
+                        <span class="ml-2 w-5 h-5 bg-faceit-orange text-white text-xs rounded-full flex items-center justify-center">
+                            {{ $chat->unread_count }}
+                        </span>
+                        @endif
                     </div>
                 </a>
                 @endforeach
@@ -34,19 +39,17 @@
         <!-- Окно чата -->
         <div class="md:col-span-3">
             @isset($selectedChat)
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-                    Чат по товару: {{ $selectedChat->product->name ?? 'No product' }}
+            <div class="bg-faceit-light dark:bg-faceit-dark rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-6 text-faceit-dark dark:text-faceit-light">
+                    Чат с {{ $chat->seller->name }}
                 </h2>
-                
-                <div class="space-y-4 mb-6 max-h-96 overflow-y-auto scroll-smooth" id="messages-container">
-                    @foreach($selectedChat->messages as $message)
-                    <div class="@if($message->sender_id == auth()->id()) text-right @endif">
-                        <div class="@if($message->sender_id == auth()->id()) bg-blue-100 dark:bg-blue-900 @else bg-gray-100 dark:bg-gray-700 @endif rounded-lg p-4 inline-block max-w-xs">
-                            <p class="text-gray-800 dark:text-gray-200">{{ $message->content }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                {{ $message->created_at->diffForHumans() }} | 
-                                {{ $message->sender_id == auth()->id() ? 'Вы' : $message->sender->name }}
+                <div class="space-y-4">
+                    @foreach($messages as $message)
+                    <div class="flex {{ $message->user_id == auth()->id() ? 'justify-end' : 'justify-start' }}">
+                        <div class="max-w-xs md:max-w-md px-4 py-2 rounded-lg {{ $message->user_id == auth()->id() ? 'bg-faceit-orange text-white' : 'bg-gray-200 dark:bg-gray-700' }}">
+                            <p>{{ $message->body }}</p>
+                            <p class="text-xs {{ $message->user_id == auth()->id() ? 'text-orange-100' : 'text-gray-500 dark:text-gray-400' }}">
+                                {{ $message->created_at->diffForHumans() }}
                             </p>
                         </div>
                     </div>
