@@ -47,6 +47,19 @@
                                 <x-application-logo class="block h-9 w-auto fill-current text-faceit-orange" />
                             </a>
                         </div>
+                        <div class="ml-6 flex items-center">
+                        <form id="searchForm">
+    <div class="relative">
+        <input type="text" id="searchInput" name="query" placeholder="Поиск товаров" 
+               class="bg-faceit-dark border border-faceit-orange rounded-md px-4 py-1 text-faceit-light focus:outline-none focus:ring-2 focus:ring-faceit-orange" />
+        <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-faceit-orange">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </button>
+    </div>
+</form>
+                        </div>
                     </div>
 
                     @if (Route::has('login'))
@@ -118,3 +131,60 @@
     </div>
 </body>
 </html>
+<script>
+let searchTimer;
+const route = (name) => {
+    return '{{ route("products.search") }}';
+};
+
+// Обработчик ввода в поисковую строку
+document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        performSearch();
+    }, 500);
+});
+
+// Обработчик кнопки поиска
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    clearTimeout(searchTimer);
+    performSearch();
+});
+
+function performSearch() {
+    const query = document.getElementById('searchInput').value;
+    const grid = document.querySelector('.grid');
+    
+    if (!grid) {
+        console.error('Элемент grid не найден');
+        return;
+    }
+    
+    grid.innerHTML = '<div class="col-span-full text-center py-8">Идет поиск...</div>';
+    
+    fetch(route('products.search') + '?query=' + encodeURIComponent(query), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Ошибка сервера: ' + response.status);
+        return response.json();
+    })
+    .then(data => {
+        grid.innerHTML = data.html;
+    })
+    .catch(error => {
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-red-500">${error.message}</div>`;
+        console.error('Ошибка поиска:', error);
+    });
+}
+</script>
+<div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+    @foreach($products as $product)
+        <!-- Ваши карточки товаров -->
+    @endforeach
+</div>

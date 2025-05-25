@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = auth()->user()->products()->latest()->get();
-
-        return view('dashboard', [
-            'products' => $products
-        ]);
+        $products = Product::with('user')
+            ->latest()
+            ->paginate(12);
+        
+        // Исправлено с welcome на dashboard
+        return view('dashboard', compact('products'));
     }
 
     public function create()
@@ -49,5 +51,21 @@ class ProductController extends Controller
     public function show(Product $product) 
     {
     return view('products.show', compact('product'));
+    }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        
+        if(empty($query)) {
+            $products = Product::with('user')->latest()->paginate(12);
+        } else {
+            $products = Product::where('name', 'like', '%'.$query.'%')
+                ->with('user')
+                ->paginate(12);
+        }
+        
+        return response()->json([
+            'html' => view('products.partials.grid', compact('products'))->render()
+        ]);
     }
 }

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
-
+Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/dashboard', function () {
     return view('dashboard', [
         'products' => auth()->user()->products()->latest()->get()
@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/chats/{chat}/messages', [ChatController::class, 'storeMessage'])
         ->name('chats.messages.store');
 });
+
+
 
 require __DIR__.'/auth.php';
 
