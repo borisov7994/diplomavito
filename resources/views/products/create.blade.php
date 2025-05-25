@@ -10,7 +10,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('products.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('products.store') }}" class="space-y-4" enctype="multipart/form-data">
             @csrf
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">Название товара</label>
@@ -26,6 +26,10 @@
                 <label for="price" class="block text-sm font-medium text-gray-700">Цена</label>
                 <input type="number" step="0.01" name="price" id="price" required
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+            <div class="mb-4">
+                <label for="image" class="block text-gray-700">Фото товара</label>
+                <input type="file" name="image" id="image" class="mt-1 block w-full" accept="image/*">
             </div>
             <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                 Создать товар

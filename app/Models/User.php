@@ -17,6 +17,32 @@ class User extends Authenticatable
         return $this->hasMany(Product::class);
     }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id')
+            ->orWhere('recipient_id', $this->id);
+    }
+
+    public function sellerChats()
+    {
+        return $this->hasMany(Chat::class, 'seller_id');
+    }
+
+    public function buyerChats()
+    {
+        return $this->hasMany(Chat::class, 'buyer_id');
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'recipient_id');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

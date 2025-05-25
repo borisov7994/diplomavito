@@ -9,24 +9,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $fillable = [
-        'sender_id',
-        'recipient_id',
-        'product_id',
-        'content'
-    ];
-    public function sender()
+    protected $fillable = ['chat_id', 'user_id', 'body'];
+
+    public function chat()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(Chat::class);
     }
 
-    public function recipient()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'recipient_id');
-    }
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(User::class);
     }
 }
+
+

@@ -9,9 +9,14 @@
                 
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
-                        <!-- Место для изображений товара -->
-                        <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-64 flex items-center justify-center">
-                            <span class="text-gray-500 dark:text-gray-400">Изображение товара</span>
+                        <div class="mb-4">
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="Фото товара">
+                            @else
+                                <div class="bg-gray-200 w-full h-64 flex items-center justify-center rounded">
+                                    <span>Нет фото</span>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     
@@ -24,11 +29,15 @@
                             </span>
                         </div>
                         
-                        <div class="mb-8">
-                            <a href="{{ route('messages.show', $product) }}" class="block bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg w-full text-center">
-                                Связаться с продавцом
-                            </a>
-                        </div>
+                        <form action="{{ route('chats.store', ['product' => $product->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                <span>Связаться с продавцом</span>
+                            </button>
+                        </form>
                         
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
                             <div class="flex items-center">

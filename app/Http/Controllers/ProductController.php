@@ -9,7 +9,6 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // Получаем товары текущего пользователя
         $products = auth()->user()->products()->latest()->get();
 
         return view('dashboard', [
@@ -25,15 +24,22 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255', // Убедитесь, что имя поля совпадает с формой
+            'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|max:2048' // Убедитесь, что стоит nullable
         ]);
+    
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('product_images', 'public');
+        } else {
+            $validated['image'] = null; // Явное присвоение NULL
+        }
+    
+        $validated['user_id'] = auth()->id();
+        Product::create($validated);
         
-        // Создаем товар
-        auth()->user()->products()->create($validated);
-        
-        return redirect()->route('dashboard')->with('success', 'Товар успешно добавлен!');
+        return redirect()->route('products.index')->with('success', 'Товар успешно создан');
     }
     public function destroy(Product $product) {
         $product->delete();

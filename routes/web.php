@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MessageController;
@@ -20,30 +21,37 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('dashboard', [
+        'products' => auth()->user()->products()->latest()->get()
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-   
-    Route::get('/messages', [MessageController::class, 'list'])->name('messages.list');
-    Route::get('/messages/{product}', [MessageController::class, 'show'])->name('messages.show');
-    Route::post('/messages/{product}', [MessageController::class, 'store'])->name('messages.store');
-
-
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
    
     Route::get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+    // Чат-роуты
+    Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');
+    Route::get('/chats/{chat}', [ChatController::class, 'show'])->name('chats.show');
+    Route::post('/products/{product}/chats', [ChatController::class, 'store'])->name('chats.store');
+    
+    // Сообщения в чате
+    Route::post('/chats/{chat}/messages', [ChatController::class, 'storeMessage'])
+        ->name('chats.messages.store');
 });
 
 require __DIR__.'/auth.php';
 
-Route::get('/products/{product}/messages', [MessageController::class, 'show'])->name('messages.show');
-Route::post('/products/{product}/messages', [MessageController::class, 'store'])->name('messages.store');
-Route::get('/products/{product}/chat', [MessageController::class, 'index'])->name('messages.index');
+
+
+

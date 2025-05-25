@@ -19,7 +19,7 @@
             </div>
             
             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-            <x-nav-link :href="route('messages.list')" :active="request()->routeIs('messages.list')">
+            <x-nav-link :href="route('chats.index')" :active="request()->routeIs('messages.list')">
                  {{ __('Сообщения') }}
             </x-nav-link>
             </div>
