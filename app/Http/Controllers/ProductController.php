@@ -33,19 +33,19 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
-            'image' => 'nullable|image|max:2048' // Убедитесь, что стоит nullable
+            'image' => 'nullable|image|max:2048'
         ]);
     
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('product_images', 'public');
         } else {
-            $validated['image'] = null; // Явное присвоение NULL
+            $validated['image'] = null;
         }
     
         $validated['user_id'] = auth()->id();
         Product::create($validated);
         
-        return redirect()->route('products.index')->with('success', 'Товар успешно создан');
+        return redirect()->route('welcome')->with('success', 'Товар успешно создан');
     }
     public function destroy(Product $product) {
         $product->delete();
