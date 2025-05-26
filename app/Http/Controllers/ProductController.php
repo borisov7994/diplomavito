@@ -10,11 +10,15 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('user')
-            ->latest()
-            ->paginate(12);
+        // Для dashboard - только товары текущего пользователя
+        if(request()->routeIs('dashboard')) {
+            $products = auth()->user()->products()->latest()->paginate(12);
+        } 
+        // Для других страниц - все товары
+        else {
+            $products = Product::with('user')->latest()->paginate(12);
+        }
         
-        // Исправлено с welcome на dashboard
         return view('dashboard', compact('products'));
     }
 
